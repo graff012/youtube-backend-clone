@@ -153,7 +153,7 @@ export class AdminService {
 
   async moderateVideo(
     videoId: string,
-    action: 'approve' | 'reject',
+    action: 'approve' | 'reject'
   ): Promise<ModerationActionResponseDto> {
     const video = await this.prisma.video.findUnique({
       where: { id: videoId },
@@ -166,7 +166,7 @@ export class AdminService {
     const updatedVideo = await this.prisma.video.update({
       where: { id: videoId },
       data: {
-        status: action === 'approve' ? 'PUBLISHED' : 'DELETED', // Using DELETED instead of REJECTED
+        status: action === 'approve' ? 'PUBLISHED' : 'DELETED',
       },
     });
 

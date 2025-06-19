@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../core/database/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { Role } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +17,7 @@ export class UsersService {
   async findAll(
     page: number = 1,
     limit: number = 10,
-    search?: string,
+    search?: string
   ): Promise<{
     items: UserResponseDto[];
     total: number;
@@ -22,9 +26,9 @@ export class UsersService {
     hasMore: boolean;
   }> {
     const skip = (page - 1) * limit;
-    
+
     const where: Prisma.UserWhereInput = {};
-    
+
     if (search) {
       where.OR = [
         { username: { contains: search, mode: 'insensitive' } },
@@ -53,7 +57,7 @@ export class UsersService {
     ]);
 
     return {
-      items: users.map(user => this.mapToUserResponse(user)),
+      items: users.map((user) => this.mapToUserResponse(user)),
       total,
       page,
       limit,
@@ -88,17 +92,17 @@ export class UsersService {
     }
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
-    // Check if user exists
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto
+  ): Promise<UserResponseDto> {
     const existingUser = await this.prisma.user.findUnique({ where: { id } });
     if (!existingUser) {
       throw new NotFoundException('User not found');
     }
 
-    // Create update data object with only the fields that are provided
     const updateData: Prisma.UserUpdateInput = {};
 
-    // Handle each field individually to ensure type safety
     if (updateUserDto.email !== undefined) {
       if (updateUserDto.email !== existingUser.email) {
         const emailExists = await this.prisma.user.findUnique({
@@ -153,7 +157,11 @@ export class UsersService {
     }
   }
 
-  async updateUserRole(userId: string, role: Role, currentUserRole: Role): Promise<UserResponseDto> {
+  async updateUserRole(
+    userId: string,
+    role: Role,
+    currentUserRole: Role
+  ): Promise<UserResponseDto> {
     // Only admins can update roles
     if (currentUserRole !== Role.ADMIN) {
       throw new BadRequestException('Insufficient permissions');
@@ -162,8 +170,8 @@ export class UsersService {
     try {
       const user = await this.prisma.user.update({
         where: { id: userId },
-        data: { 
-          role: role as any // Type assertion to handle Prisma enum
+        data: {
+          role: role as any,
         },
         include: {
           _count: {
@@ -195,8 +203,14 @@ export class UsersService {
   async getWatchHistory(
     userId: string,
     limit: number = 50,
-    page: number = 1,
-  ): Promise<{ items: any[]; total: number; page: number; limit: number; hasMore: boolean }> {
+    page: number = 1
+  ): Promise<{
+    items: any[];
+    total: number;
+    page: number;
+    limit: number;
+    hasMore: boolean;
+  }> {
     const skip = (page - 1) * limit;
 
     const [items, total] = await Promise.all([

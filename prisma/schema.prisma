@@ -49,7 +49,7 @@ model User {
   phoneNumber       String   @unique @map("phone_number")
   password          String
   refreshToken      String?  @map("refresh_token")
-  avatarUrl         String   @map("avatar_url") @default("")
+  avatarUrl         String   @default("") @map("avatar_url")
   role              Role     @default(USER)
   is_email_verified Boolean  @default(false)
   is_phone_verified Boolean  @default(true)
@@ -78,7 +78,7 @@ model Category {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   videos      Video[]  @relation("VideoCategories")
-  
+
   @@map("categories")
 }
 
@@ -105,26 +105,27 @@ model Video {
   like          Like[]
   watchHistory  WatchHistory[]
   analytics     Analytics[]
+
   @@map("videos")
 }
 
 model Comment {
-  id            String    @id @default(uuid())
+  id            String   @id @default(uuid())
   content       String
-  likesCount    Int       @default(0) @map("likes_count")
-  dislikesCount Int       @default(0) @map("dislikes_count")
-  isPinned      Boolean   @default(false) @map("is_pinned")
-  parentId      String?   @map("parent_id")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  
-  authorId      String    @map("author_id")
-  author        User      @relation(fields: [authorId], references: [id])
-  videoId       String    @map("video_id")
-  video         Video     @relation(fields: [videoId], references: [id])
-  parent        Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies       Comment[] @relation("CommentReplies")
-  like          Like[]
+  likesCount    Int      @default(0) @map("likes_count")
+  dislikesCount Int      @default(0) @map("dislikes_count")
+  isPinned      Boolean  @default(false) @map("is_pinned")
+  parentId      String?  @map("parent_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  authorId String    @map("author_id")
+  author   User      @relation(fields: [authorId], references: [id])
+  videoId  String    @map("video_id")
+  video    Video     @relation(fields: [videoId], references: [id])
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+  like     Like[]
 
   @@map("comments")
 }
@@ -166,7 +167,7 @@ model PlaylistVideo {
   playlist   Playlist @relation(fields: [playlistId], references: [id])
   videoId    String   @map("video_id")
   video      Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  
+
   @@unique([playlistId, videoId])
   @@map("playlist_video")
 }
@@ -215,17 +216,17 @@ model Notification {
 model Analytics {
   id        String   @id @default(uuid())
   watchTime Int      @map("watch_time") // seconds watched
-  quality   String   // e.g., 720p, 1080p
-  device    String   // e.g., mobile, desktop, tablet
-  location  String?  // Country code
+  quality   String // e.g., 720p, 1080p
+  device    String // e.g., mobile, desktop, tablet
+  location  String? // Country code
   createdAt DateTime @default(now()) @map("created_at")
-  
+
   // Relations
   videoId String
-  video   Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
   userId  String
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([videoId])
   @@index([userId])
   @@map("analytics")

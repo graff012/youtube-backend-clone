@@ -28,8 +28,6 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { AuthGuard } from '../../common/guard/auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorators';
-import { UserRole } from 'src/common/types/user-role.enum';
 
 @Controller('videos')
 @UseGuards(AuthGuard)
@@ -70,9 +68,9 @@ export class VideosController {
         if (!allowedExtensions.includes(ext)) {
           return cb(
             new BadRequestException(
-              'Only video files (mp4, mov, avi, wmv, flv, mkv) are allowed!',
+              'Only video files (mp4, mov, avi, wmv, flv, mkv) are allowed!'
             ),
-            false,
+            false
           );
         }
         cb(null, true);
@@ -80,12 +78,12 @@ export class VideosController {
       limits: {
         fileSize: 1024 * 1024 * 500, // 500MB limit
       },
-    }),
+    })
   )
   async uploadVideo(
     @UploadedFile() file: Express.Multer.File,
     @Body() createVideoDto: CreateVideoDto,
-    @Req() req: Request & { user: { id: string } },
+    @Req() req: Request & { user: { id: string } }
   ) {
     if (!file) {
       throw new BadRequestException('No video file uploaded');
@@ -116,19 +114,20 @@ export class VideosController {
   async streamVideo(
     @Param('id') id: string,
     @Headers('range') range: string,
-    @Res() res: Response,
+    @Res() res: Response
   ) {
     if (!range) {
       throw new BadRequestException('Range header is required');
     }
 
     try {
-      const { stream, headers, fileSize } = await this.videosService.streamVideo(id, range);
-      
+      const { stream, headers, fileSize } =
+        await this.videosService.streamVideo(id, range);
+
       res.writeHead(206, headers);
-      
+
       const videoStream = stream.pipe(res);
-      
+
       return new Promise((resolve, reject) => {
         videoStream.on('finish', resolve);
         videoStream.on('error', reject);
@@ -146,7 +145,7 @@ export class VideosController {
   async updateVideo(
     @Param('id') id: string,
     @Body() updateVideoDto: UpdateVideoDto,
-    @Req() req: Request & { user: { id: string } },
+    @Req() req: Request & { user: { id: string } }
   ) {
     const userId = req.user?.id;
     if (!userId) {
@@ -160,7 +159,7 @@ export class VideosController {
   @UseGuards(AuthGuard)
   async deleteVideo(
     @Param('id') id: string,
-    @Req() req: Request & { user: { id: string } },
+    @Req() req: Request & { user: { id: string } }
   ) {
     const userId = req.user?.id;
     if (!userId) {
@@ -175,7 +174,7 @@ export class VideosController {
   async watchVideo(
     @Param('id') id: string,
     @Headers('range') range: string | undefined,
-    @Res() res: Response,
+    @Res() res: Response
   ) {
     try {
       const videoData = await this.videosService.watchVideo(id, range);

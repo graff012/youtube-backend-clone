@@ -56,9 +56,8 @@ export class PlaylistService {
   async addVideo(
     playlistId: string,
     addVideoToPlaylistDto: AddVideoToPlaylistDto,
-    authorId: string,
+    authorId: string
   ) {
-    // Verify playlist exists and user is the owner
     const playlist = await this.prisma.playlist.findUnique({
       where: { id: playlistId },
       select: { authorId: true },
@@ -188,7 +187,7 @@ export class PlaylistService {
     userId: string,
     page: number = 1,
     limit: number = 20,
-    isOwner: boolean = false,
+    isOwner: boolean = false
   ) {
     const skip = (page - 1) * limit;
 
@@ -242,11 +241,11 @@ export class PlaylistService {
     ]);
 
     const videoCountMap = new Map(
-      videoCounts.map((vc) => [vc.playlistId, vc._count._all]),
+      videoCounts.map((vc) => [vc.playlistId, vc._count._all])
     );
 
     const thumbnailMap = new Map(
-      firstVideos.map((fv) => [fv.playlistId, fv.video.thumbnail]),
+      firstVideos.map((fv) => [fv.playlistId, fv.video.thumbnail])
     );
 
     const items = playlists.map((playlist) => ({
@@ -266,7 +265,7 @@ export class PlaylistService {
   async update(
     id: string,
     updatePlaylistDto: UpdatePlaylistDto,
-    authorId: string,
+    authorId: string
   ) {
     const playlist = await this.prisma.playlist.findUnique({
       where: { id },

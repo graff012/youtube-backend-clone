@@ -1,28 +1,31 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  UseGuards, 
-  Query, 
-  DefaultValuePipe, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  DefaultValuePipe,
   ParseIntPipe,
-  Request
+  Request,
 } from '@nestjs/common';
-import { 
-  ApiTags, 
-  ApiOperation, 
-  ApiResponse, 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
   ApiBearerAuth,
   ApiParam,
-  ApiQuery
+  ApiQuery,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guard/auth.guard';
 import { PlaylistService } from './playlist.service';
-import { CreatePlaylistDto, AddVideoToPlaylistDto } from './dto/create-playlist.dto';
+import {
+  CreatePlaylistDto,
+  AddVideoToPlaylistDto,
+} from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 
 @ApiTags('playlists')
@@ -37,10 +40,7 @@ export class PlaylistController {
   @ApiResponse({ status: 201, description: 'Playlist created successfully' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async create(
-    @Body() createPlaylistDto: CreatePlaylistDto,
-    @Request() req
-  ) {
+  async create(@Body() createPlaylistDto: CreatePlaylistDto, @Request() req) {
     return this.playlistService.create(createPlaylistDto, req.user.id);
   }
 
@@ -69,10 +69,7 @@ export class PlaylistController {
   @ApiResponse({ status: 200, description: 'Returns the playlist' })
   @ApiResponse({ status: 403, description: 'Forbidden - Playlist is private' })
   @ApiResponse({ status: 404, description: 'Playlist not found' })
-  async findOne(
-    @Param('id') id: string,
-    @Request() req
-  ) {
+  async findOne(@Param('id') id: string, @Request() req) {
     const userId = req.user?.id;
     return this.playlistService.findOne(id, userId);
   }
@@ -139,10 +136,7 @@ export class PlaylistController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 404, description: 'Playlist not found' })
-  async remove(
-    @Param('id') id: string,
-    @Request() req
-  ) {
+  async remove(@Param('id') id: string, @Request() req) {
     return this.playlistService.remove(id, req.user.id);
   }
 }
