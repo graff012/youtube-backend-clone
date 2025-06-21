@@ -12,7 +12,6 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
-  ApiQuery,
 } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { AuthGuard } from '../../common/guard/auth.guard';
