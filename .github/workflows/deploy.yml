@@ -33,4 +33,4 @@ jobs:
           EOF
         
       - name: Clean up SSH key 
-        run: rm my_ssh_key.pem
+        run: rm ssh_key.pem
