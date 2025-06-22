@@ -13,7 +13,7 @@ jobs:
       SSH_KEY: ${{secrets.SSH_PRIVATE_KEY}}
     steps:
       
-      - name: Write SSH key
+      - name: write SSH key
         run: |
           printf '%s\n' "$SSH_KEY" > ssh_key.pem
           chmod 600 ssh_key.pem
