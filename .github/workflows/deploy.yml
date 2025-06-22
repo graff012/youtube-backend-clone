@@ -29,8 +29,3 @@ jobs:
         
       - name: Clean up SSH key 
         run: rm my_ssh_key.pem
-
-      - name: Write SSH key
-        run: |
-        printf '%s\n' "$SSH_KEY" > ssh_key.pem
-        chmod 600 ssh_key.pem
