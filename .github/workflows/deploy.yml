@@ -10,7 +10,7 @@ jobs:
     env:
       SERVER_HOST: ${{secrets.SERVER_HOST}}
       SERVER_USER: ${{secrets.SERVER_USER}}
-      SSH_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+      SSH_KEY: ${{secrets.SSH_SECRET_KEY}}
     steps:
       
       - name: write SSH key
