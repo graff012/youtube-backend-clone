@@ -1,1 +1,57 @@
+services:
+  app-1:
+    build:
+      context: .
+      args:
+        PORT: ${PORT}
+    environment:
+      - PORT=${PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=6379
+    command: sh -c "yarn start:prod"
+    ports:
+      - '4000:4000'
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
 
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '5433:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-container
+    ports:
+      - '81:80'
+      - '443:443'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl/:/etc/ssl/:ro
+    depends_on:
+      - app-1
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - '6378:6379'
+    volumes:
+      - redisdata:/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
