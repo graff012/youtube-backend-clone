@@ -8,11 +8,13 @@ services:
       - PORT=${PORT}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=6379
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
     command: sh -c "yarn start:prod"
     ports:
       - '4000:4000'
-    volumes:
-      - .:/app
+      # No need for volumes when deploying via prod, and also useful for github actions
+    # volumes:
+    #   - .:/app
     depends_on:
       - postgres
       - redis
