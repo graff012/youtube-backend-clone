@@ -18,7 +18,7 @@ jobs:
           printf '%s\n' "$SSH_KEY" > ssh_key.pem
           chmod 600 ssh_key.pem
 
-      - name: Deploy to server 
+      - name: Deploy to Server 
         run: |
           ssh -i ssh_key.pem -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_HOST" <<'EOF'
           set -e 
