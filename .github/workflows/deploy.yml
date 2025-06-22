@@ -22,7 +22,11 @@ jobs:
         run: |
           ssh -i ssh_key.pem -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_HOST" <<'EOF'
           set -e 
-          cd /home/ubuntu/app
+          REPO_DIR=/home/ubuntu/app
+          if [ ! -d "$REPO_DIR/.git" ]; then
+            git clone https://github.com/graff012/youtube-backend-clone.git "$REPO_DIR"
+          fi
+          cd "$REPO_DIR"
           git pull origin main 
           sudo docker compose down 
           sudo docker compose up -d --build 
